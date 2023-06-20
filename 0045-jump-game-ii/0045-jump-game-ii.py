@@ -1,9 +1,16 @@
 class Solution:
     def jump(self, nums: List[int]) -> int:
-        dp = [100000 for _ in range(len(nums))]
-        dp[0] = 0
-        for i in range(len(nums)):
-            for j in range(i+1, min(len(nums), i+nums[i]+1)):
-                dp[j] = min(dp[j], dp[i]+1)
-                    
-        return dp[-1]
+        if(len(nums)==1):
+            return 0
+        l = 0
+        r = nums[0]
+        farthest = 0
+        res = 0
+        while r<len(nums)-1:
+            for i in range(l, r+1):
+                farthest = max(i+nums[i], farthest)
+            l = r+1
+            r = farthest
+            res+=1
+            
+        return res+1
