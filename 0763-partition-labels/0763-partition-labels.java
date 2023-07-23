@@ -5,17 +5,15 @@ class Solution {
             M.put(s.charAt(i), i);
         
         var sol = new ArrayList<Integer>();
-        int l = 0;
-        while(l<s.length()){
-            int r = M.get(s.charAt(l));
-            int cur_len = 1;
-            while(l<r){
-                r = Math.max(r, M.get(s.charAt(l)));
-                l++;
-                cur_len++;
+        int size = 0, end = 0;
+        for(int i=0; i<s.length(); i++){
+            end = Math.max(end, M.get(s.charAt(i)));
+            size++;
+            
+            if(i == end){
+                sol.add(size);
+                size = 0;
             }
-            l++;
-            sol.add(cur_len);
         }
         return sol;
     }
