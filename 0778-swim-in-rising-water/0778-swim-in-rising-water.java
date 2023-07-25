@@ -12,6 +12,8 @@ class Solution {
             if(dp[x][y]!=null && cost>=dp[x][y])
                 continue;
             dp[x][y] = cost;
+            if(x==n-1 && y==n-1)
+                break;
             // System.out.format("(%d, %d) = %d\n", x, y, cost);
             for(int[] d : dir){
                 int n_x = x+d[0], n_y = y+d[1];
