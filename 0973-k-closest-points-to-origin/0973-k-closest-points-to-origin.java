@@ -4,12 +4,6 @@ class Solution {
     }
     
     void quickSelect(int[][] points, int l, int r, int k){
-        System.out.format("%d, %d, %d\n", l, r, k);
-        /*
-        for(int[] e : points)
-            System.out.format("[%d, %d]", e[0], e[1]);
-        System.out.println("");
-        */
         int[] pivot = points[r];
         int ll = l-1, cur = l;
         while(cur<r){
