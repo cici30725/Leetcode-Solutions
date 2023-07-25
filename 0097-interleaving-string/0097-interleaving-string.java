@@ -1,44 +1,23 @@
 class Solution {
-    boolean[][][] dp;
-    
+    boolean dp(Boolean[][] memo, int s1_idx, int s2_idx, String s1, String s2, String s3){
+        if(s1_idx==-1)
+            return s3.substring(0, s2_idx+1).equals(s2.substring(0, s2_idx+1));
+        else if(s2_idx==-1)
+            return s3.substring(0, s1_idx+1).equals(s1.substring(0, s1_idx+1));
+        
+        if(memo[s1_idx][s2_idx]!=null)
+            return memo[s1_idx][s2_idx];
+        
+        int s3_idx = s1_idx + s2_idx + 1;
+        boolean first = (s3.charAt(s3_idx) == s1.charAt(s1_idx)) && dp(memo, s1_idx-1, s2_idx, s1, s2, s3);
+        boolean second = (s3.charAt(s3_idx) == s2.charAt(s2_idx)) && dp(memo, s1_idx, s2_idx-1, s1, s2, s3);
+        return memo[s1_idx][s2_idx] = first || second;
+    }
     public boolean isInterleave(String s1, String s2, String s3) {
-        if(s3.length()!= s1.length()+s2.length())
+        if(s1.length()+s2.length()!=s3.length())
             return false;
         
-        dp = new boolean[s3.length()+1][s1.length()+1][s2.length()+1];
-        for(int i=0; i<=s3.length(); i++){
-            for(int j=0; j<=s1.length(); j++){
-                for(int k=0; k<=s2.length(); k++){
-                    dp[i][j][k] = false;
-                }
-            }
-        }
-        dp[0][0][0] = true;
-        // dp[1][1][0] = (s3.charAt(0) == s1.charAt(0));
-        // dp[1][0][1] = (s3.charAt(0) == s2.charAt(0));
-        
-        for(int i=0; i<=s3.length(); i++){
-            for(int j=0; j<=s1.length(); j++){
-                for(int k=0; k<=s2.length(); k++){
-                    if(i==0 && j==0 && k==0)
-                        dp[i][j][k] = true;
-                    else if(i!=j+k)
-                        dp[i][j][k] = false;
-                    else if(j==0)
-                        dp[i][0][k] = s3.substring(0, i).equals(s2.substring(0, k));
-                    else if(k==0)
-                        dp[i][j][0] = s3.substring(0, i).equals(s1.substring(0, j));
-                    else{
-                        boolean first = dp[i-1][j-1][k] && (s3.charAt(i-1)==s1.charAt(j-1));
-                        boolean sec = dp[i-1][j][k-1] && (s3.charAt(i-1)==s2.charAt(k-1));
-                        dp[i][j][k] = first || sec;
-                        // System.out.format("(%d, %d, %d) = first %b\n", i, j, k, dp[i-1][j-1][k]);
-                    }
-                    // System.out.format("(%d, %d, %d) = %b\n", i, j, k, dp[i][j][k]);
-                }
-            }
-        }
-        
-      return dp[s3.length()][s1.length()][s2.length()];
+        Boolean[][] memo = new Boolean[s1.length()][s2.length()];
+        return dp(memo, s1.length()-1, s2.length()-1, s1, s2, s3);
     }
 }
