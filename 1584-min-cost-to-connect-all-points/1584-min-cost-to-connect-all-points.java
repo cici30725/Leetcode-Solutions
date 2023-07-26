@@ -1,8 +1,14 @@
 class Solution {
     int[] dsu;
+    int[] rank;
     int dist(int[] a, int[] b){
         return Math.abs(a[0]-b[0]) + Math.abs(a[1]-b[1]);
     }
+    void make_set(int u){
+        dsu[u] = u;
+        rank[u] = 0;
+    }
+    
     int find(int u){
         if(dsu[u] == u)
             return u;
@@ -10,8 +16,18 @@ class Solution {
     }
     
     void join(int u, int v){
-        int p_u = find(u), p_v = find(v);
-        dsu[p_v] = p_u;
+        u = find(u);
+        v = find(v);
+        if(u!=v){
+            if(rank[u]<rank[v]){
+                var tmp = u;
+                u = v;
+                v = tmp;
+            }
+            dsu[v] = u;
+            if(rank[u] == rank[v])
+                rank[u]++;
+        }
     }
     
     public int minCostConnectPoints(int[][] points) {
@@ -31,8 +47,9 @@ class Solution {
         
         int sol = 0;
         dsu = new int[points.length];
+        rank = new int[points.length];
         for(int i=0; i<dsu.length; i++)
-            dsu[i] = i;
+            make_set(i);
         
         for(int[] edge : edges){
             int u = edge[0], v = edge[1];
