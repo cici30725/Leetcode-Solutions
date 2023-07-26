@@ -18,7 +18,7 @@ class Solution {
             S.push(new int[]{i, heights[i]});
         }
         
-        S.clear();
+        S = new Stack<>();
         
         for(int i=n-1; i>=0; i--){
             int val = n;
