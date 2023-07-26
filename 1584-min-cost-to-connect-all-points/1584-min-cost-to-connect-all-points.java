@@ -51,6 +51,7 @@ class Solution {
         for(int i=0; i<dsu.length; i++)
             make_set(i);
         
+        int cnt = 0;
         for(int[] edge : edges){
             int u = edge[0], v = edge[1];
             int p_u = find(u), p_v = find(v);
@@ -58,6 +59,9 @@ class Solution {
                 continue;
             sol+=dist(points[u], points[v]);
             join(u, v);
+            cnt++;
+            if(cnt == points.length-1)
+                break;
         }
         return sol;
     }
