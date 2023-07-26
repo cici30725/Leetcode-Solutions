@@ -1,54 +1,46 @@
 class Solution {
     public int largestRectangleArea(int[] heights) {
-        TreeMap<Integer, Integer> M = new TreeMap<>();
-        TreeMap<Integer, ArrayList<Integer>> heightMap = new TreeMap<>(Collections.reverseOrder());
-        for(int i=0; i<heights.length; i++){
-            var list = heightMap.computeIfAbsent(heights[i], k-> new ArrayList<Integer>());
-            list.add(i);
+        Stack<int[]> S = new Stack<>();
+        int n = heights.length;
+        int[] l_arr = new int[n];
+        int[] r_arr = new int[n];
+        for(int i=0; i<n; i++){
+            int val = -1;
+            while(!S.isEmpty()){
+                int[] top = S.peek();
+                if(top[1]<heights[i]){
+                    val = top[0];
+                    break;
+                }
+                S.pop();
+            }
+            l_arr[i] = val;
+            S.push(new int[]{i, heights[i]});
         }
         
-        int sol = 0;
+        S.clear();
         
-        for(Map.Entry<Integer, ArrayList<Integer>> entry : heightMap.entrySet()){
-            int h = entry.getKey();
-            var list = entry.getValue();
-            for(int idx : list){
-                var i1 = M.lowerEntry(idx+1);
-                var i2 = M.ceilingEntry(idx+1);
-                Integer l1, l2, r1, r2;
-                if(i1==null){
-                    l1 = -100;
-                    r1 = -100;
+        for(int i=n-1; i>=0; i--){
+            int val = n;
+            while(!S.isEmpty()){
+                int[] top = S.peek();
+                if(top[1]<heights[i]){
+                    val = top[0];
+                    break;
                 }
-                else{
-                    l1 = i1.getKey();
-                    r1 = i1.getValue();
-                }
-                
-                if(i2==null){
-                    l2 = 1000000;
-                    r2 = 1000000;
-                }
-                else{
-                    l2 = i2.getKey();
-                    r2 = i2.getValue();
-                }
-                
-                int cur_l = idx, cur_r = idx;
-                if(idx-1 == r1){
-                    M.remove(l1);
-                    cur_l = l1;
-                }
-                if(idx+1 == l2){
-                    M.remove(l2);
-                    cur_r = r2;
-                }
-                
-                M.put(cur_l, cur_r);
-                sol = Math.max(sol, (cur_r-cur_l+1)*h);
+                S.pop();
             }
+            r_arr[i] = val;
+            S.push(new int[]{i, heights[i]});
+        }
+        
+        int sol=0;
+        for(int i=0; i<n; i++){
+            int l_area = (i-l_arr[i])*heights[i];
+            int r_area = Math.abs(i-r_arr[i])*heights[i];
+            // System.out.format("%d: %d, %d\n", i, l_arr[i], r_arr[i]);
+            sol = Math.max(l_area+r_area-heights[i], sol);
         }
         return sol;
-        
     }
 }
