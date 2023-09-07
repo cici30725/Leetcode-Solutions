@@ -14,37 +14,21 @@ public:
         ListNode* dummy = new ListNode();
         ListNode* prev = dummy;
         int carry = 0;
-        while(l1!=nullptr && l2!=nullptr){
-            int cur_val = l1->val + l2->val + carry;
-            if(cur_val>9){
-                carry = 1;
-                cur_val = cur_val % 10;
+        while(l1!=nullptr || l2!=nullptr || carry) {
+            int cur = 0;
+            if(l1!=nullptr){
+                cur+=l1->val;
+                l1 = l1->next;
             }
-            else {
-                carry = 0;
+            if(l2!=nullptr){
+                cur+=l2->val;
+                l2 = l2->next;
             }
-            prev->next = new ListNode(cur_val);
+            cur += carry;
+            carry = cur > 9 ? 1 : 0;
+            prev->next = new ListNode(cur % 10);
             prev = prev->next;
-            l1 = l1->next;
-            l2 = l2->next;
         }
-        if(l1==nullptr)
-            swap(l1, l2);
-        while(l1!=nullptr){
-            int cur_val = l1->val + carry;
-            if(cur_val>9){
-                carry = 1;
-                cur_val = cur_val % 10;
-            }
-            else {
-                carry = 0;
-            }
-            prev->next = new ListNode(cur_val);
-            prev = prev->next;
-            l1 = l1->next;
-        }
-        if(carry > 0)
-            prev->next = new ListNode(1);
         return dummy->next;
     }
 };
