@@ -4,6 +4,7 @@ public:
     
     ll modulo = 1e9 + 7;
     ll modPow(ll base, ll p){
+        p = p % (modulo-1);
         ll res = 1;
         while(p>0){
             if(p & 1)
