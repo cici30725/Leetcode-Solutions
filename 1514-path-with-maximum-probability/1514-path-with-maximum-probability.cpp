@@ -12,8 +12,8 @@ public:
         }
         
         double sol = 0;
-        priority_queue<pp, vector<pp>, greater<pp>> q;
-        q.push({0, start_node});
+        priority_queue<pp, vector<pp>> q;
+        q.push({1, start_node});
         while(q.size()){
             pp cur = q.top();
             q.pop();
@@ -24,17 +24,16 @@ public:
                 continue;
             
             d[u] = w;
-            cout<<u<<" "<<w<<endl;
+            // cout<<u<<" "<<w<<endl;
             if(u==end_node){
-                sol = exp(-w);
+                sol = w;
                 break;
             }
             for(auto& next : adj[u]){
                 int v = next.second;
-                double next_w = -log(next.first);
-                // cout<<"next "<<v<<" "<<next.second<<" "<<next_w<<endl;
-                if(d[v]==-1 || d[u] + next_w < d[v]){
-                    q.push({d[u]+next_w, v});
+                double next_w = next.first;
+                if(d[u]*next_w > d[v]){
+                    q.push({d[u]*next_w, v});
                 }
             }
         }
