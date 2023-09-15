@@ -1,25 +1,33 @@
 class Solution {
 public:
-    bool dfs(int idx, vector<int>& m, array<int, 4>& buckets, int target){
-        if(idx==m.size())
-            return true;
-        for(int i=0; i<buckets.size(); i++){
-            if(buckets[i] + m[idx] <= target) {
-                buckets[i] += m[idx];
-                if(dfs(idx+1, m, buckets, target))
-                    return true;
-                buckets[i] -= m[idx];
-            }
-        }
-        return false;
-    }
-    
     bool makesquare(vector<int>& matchsticks) {
         int total = accumulate(matchsticks.begin(), matchsticks.end(), 0);
-        sort(matchsticks.rbegin(), matchsticks.rend());
         if(total % 4 !=0)
             return false;
-        array<int, 4> buckets{};
-        return dfs(0, matchsticks, buckets, total/4);
+        
+        total /= 4;
+        
+        unordered_map<int, bool> memo;
+        function<bool(int, int)> dfs = [&](int i, int cur_sum) ->bool{
+            if(i==0)
+                return true;
+            
+            if(memo.count(i))
+                return memo[i];
+            
+            for(int j=0; j<matchsticks.size(); j++){
+                if(!((1<<j) & i))
+                    continue;
+                i = i ^ (1<<j);
+                if(cur_sum + matchsticks[j] <= total && dfs(i, (cur_sum + matchsticks[j])%total)){
+                    return true;
+                }
+                i = i ^ (1<<j);
+            }
+            
+            return memo[i] = false;
+        };
+        
+        return dfs((1 << matchsticks.size())-1, 0);
     }
 };
