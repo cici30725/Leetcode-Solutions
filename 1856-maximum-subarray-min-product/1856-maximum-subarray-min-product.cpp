@@ -5,70 +5,47 @@ public:
     int maxSumMinProduct(vector<int>& nums) {
         int n = nums.size();
         vector<ll> cum(n);
-        vector<ll> right_cum(n);
-        for(int i=0; i<n; i++){
-            if(i==0)
-                cum[0] = nums[0];
-            else
-                cum[i] = cum[i-1]+nums[i];
-        }
-        for(int i=n-1; i>=0; i--){
-            if(i==n-1)
-                right_cum[n-1] = nums[n-1];
-            else
-                right_cum[i] = right_cum[i+1]+nums[i];
+        cum[0] = nums[0];
+        for(int i=1; i<n; i++){
+            cum[i] = cum[i-1]+nums[i];
         }
         
-        vector<ll> left_dp(n, 0);
-        vector<pair<int, int>> sk;
+        vector<ll> left_dp(n, 0), right_dp(n, 0);
+        stack<pair<int, int>> s1, s2;
         for(int i=0; i<nums.size(); i++){
-            int cur_num = nums[i];
-            while(!sk.empty()){
-                if(sk.back().first < cur_num)
-                    break;
-                sk.pop_back();
+            int idx = -1;
+            while(!s1.empty() && s1.top().first >= nums[i]){
+                s1.pop();
             }
             
-            if(sk.empty()){
-                left_dp[i] = cur_num*cum[i];
-                // cout<<"1 "<<cur_num<<" "<<res<<endl;
-            }
-            else{
-                int idx = sk.back().second;
-                left_dp[i] = static_cast<ll>(cur_num) * (cum[i] - cum[idx]);
-                // cout<<"2 "<<cur_num<<" "<<idx<<" "<<res<<endl;
-            }
+            if(!s1.empty())
+                idx = s1.top().second;
             
-            sk.push_back({cur_num, i});
+            left_dp[i] = idx;
+            s1.push({nums[i], i});
         }
-        
-        sk.clear();
-        vector<ll> right_dp(n, 0);
         
         for(int i=n-1; i>=0; i--){
-            int cur_num = nums[i];
-            while(!sk.empty()){
-                if(sk.back().first < cur_num)
-                    break;
-                sk.pop_back();
+            int idx = n;
+            while(!s2.empty() && s2.top().first >= nums[i]){
+                s2.pop();
             }
             
-            if(sk.empty()){
-                right_dp[i] = cur_num*right_cum[i];
-            }
-            else{
-                int idx = sk.back().second;
-                right_dp[i] = static_cast<ll>(cur_num) * (right_cum[i] - right_cum[idx]);
-            }
+            if(!s2.empty())
+                idx = s2.top().second;
             
-            sk.push_back({cur_num, i});
+            right_dp[i] = idx;
+            s2.push({nums[i], i});
         }
+        
         
         ll res = 0;
         for(int i=0; i<n; i++){
             // cout<<left_dp[i]<<" "<<right_dp[i]<<endl;
-            ll cur_num = static_cast<ll>(nums[i])*static_cast<ll>(nums[i]);
-            res = max(res, left_dp[i] - cur_num + right_dp[i]);
+            ll right = right_dp[i]-1, left = left_dp[i];
+            ll cur_sum = cum[right] - (left>=0 ? cum[left] : 0);
+            // ll cur_num = static_cast<ll>(nums[i])*static_cast<ll>(nums[i]);
+            res = max(res, cur_sum * nums[i]);
         }
         
         return res % static_cast<int>(1e9 + 7);
