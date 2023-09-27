@@ -6,13 +6,11 @@ public:
             return;
         }
         
-        if(n-idx+1 < k)
-            return;
-        
-        vec.push_back(idx);
-        dfs(n, idx+1, k-1, vec, sol);
-        vec.pop_back();
-        dfs(n, idx+1, k, vec, sol);
+        for(int i=idx; i<=n; i++){
+            vec.push_back(i);
+            dfs(n, i+1, k-1, vec, sol);
+            vec.pop_back();
+        }
     }
     
     vector<vector<int>> combine(int n, int k) {
