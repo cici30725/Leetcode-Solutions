@@ -4,14 +4,14 @@ public:
         if(s.size() != t.size())
             return false;
         
-        array<int, 26> freq_s{}, freq_t{};
+        array<int, 26> freq{};
         for(int i=0; i<s.size(); i++){
-            freq_s[s[i]-'a']++;
-            freq_t[t[i]-'a']++;
+            freq[s[i]-'a']++;
+            freq[t[i]-'a']--;
         }
         
         for(int i=0; i<26; i++){
-            if(freq_s[i]!=freq_t[i]){
+            if(freq[i]!=0){
                 return false;
             }
         }
