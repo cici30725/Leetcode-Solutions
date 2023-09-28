@@ -6,9 +6,10 @@ public:
         while(i>=0 || j>=0 || c == 1){
             c += (i>=0 ? a[i--]-'0' : 0);
             c += (j>=0 ? b[j--]-'0' : 0);
-            s = char(c%2 + '0') + s;
+            s += char(c%2 + '0');
             c/=2;
         }
+        reverse(s.begin(), s.end());
         return s;
     }
 };
