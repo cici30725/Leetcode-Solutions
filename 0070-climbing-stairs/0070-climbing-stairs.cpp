@@ -4,12 +4,17 @@ public:
         vector<int> dp(n, 0);
         if(n==1)
             return 1;
-        dp[0] = 1;
-        dp[1] = 2;
+        if(n==2)
+            return 2;
+        
+        int prev_two_step = 1;
+        int prev_one_step = 2;
         for(int i=2; i<n; i++){
-            dp[i] = dp[i-1] + dp[i-2];
+            int cur = prev_one_step + prev_two_step;
+            prev_two_step = prev_one_step;
+            prev_one_step = cur;
         }
         
-        return dp[n-1];
+        return prev_one_step;
     }
 };
