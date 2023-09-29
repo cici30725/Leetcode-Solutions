@@ -1,33 +1,32 @@
 class Solution {
 public:
-    bool dfs(int cur, vector<vector<int>>& adj, unordered_set<int>& visit){
-        if(visit.find(cur)!=visit.end())
-            return true;
-        
-        visit.insert(cur);
-        for(int v : adj[cur]){
-            if(dfs(v, adj, visit))
-                return true;
-        }
-        
-        visit.erase(cur);
-        adj[cur].clear();
-        return false;
-    }
-        
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         int n = numCourses;
+        vector<int> indegree(n, 0);
         vector<vector<int>> adj(n);
-        for(auto edge : prerequisites){
-            adj[edge[1]].push_back(edge[0]);
+        for(auto& v : prerequisites){
+            adj[v[1]].push_back(v[0]);
+            indegree[v[0]]++;
         }
         
-        unordered_set<int> visit;
+        queue<int> q;
         for(int i=0; i<n; i++){
-            if(dfs(i, adj, visit))
-                return false;
+            if(indegree[i]==0)
+                q.push(i);
         }
         
-        return true;
+        int nodes_visited = 0;
+        while(!q.empty()){
+            int cur = q.front();
+            q.pop();
+            nodes_visited++;
+            for(int v : adj[cur]){
+                indegree[v]--;
+                if(indegree[v]==0)
+                    q.push(v);
+            }
+        }
+        
+        return nodes_visited == n;
     }
 };
