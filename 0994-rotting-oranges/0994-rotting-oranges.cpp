@@ -24,9 +24,8 @@ public:
         }
         
         int res = 0;
-        while(!q.empty()){
+        while(!q.empty() && freshOrange>0){
             int size = q.size();
-            int contaminated = 0;
             for(int i=0; i<size; i++){
                 auto [x, y] = q.front();
                 q.pop();
@@ -36,13 +35,11 @@ public:
                     if(isValid(xx, yy, m, n) && grid[xx][yy]==1){
                         grid[xx][yy] = 2;
                         q.push({xx, yy});
-                        contaminated++;
+                        freshOrange--;
                     }
                 }
             }
-            freshOrange -= contaminated;
-            if(contaminated>0)
-                res++;
+            res++;
         }
         
         return freshOrange>0 ? -1 : res;
