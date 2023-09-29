@@ -1,24 +1,26 @@
 class Solution {
 public:
-    void dfs(vector<vector<int>>& sol, vector<int>& candidates, vector<int>& cur_arr, int target, int cur_idx){
+    void dfs(int idx, vector<int>& cur, vector<int>& candidates, vector<vector<int>>& sol, int target){
         if(target == 0){
-            sol.push_back(cur_arr);
+            sol.push_back(cur);
             return;
         }
-        
-        if(target < 0 || cur_idx == candidates.size()){
+        else if(target < 0)
             return;
-        }
         
-        cur_arr.push_back(candidates[cur_idx]);
-        dfs(sol, candidates, cur_arr, target-candidates[cur_idx], cur_idx);
-        cur_arr.pop_back();
-        dfs(sol, candidates, cur_arr, target, cur_idx+1);
+        if(idx==candidates.size())
+            return;
+        
+        cur.push_back(candidates[idx]);
+        dfs(idx, cur, candidates, sol, target-candidates[idx]);
+        cur.pop_back();
+        dfs(idx+1, cur, candidates, sol, target);
     }
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<int> cur;
         vector<vector<int>> sol;
-        vector<int> cur_arr;
-        dfs(sol, candidates, cur_arr, target, 0);
+        dfs(0, cur, candidates, sol, target);
         return sol;
     }
 };
