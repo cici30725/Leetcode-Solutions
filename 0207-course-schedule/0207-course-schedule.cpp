@@ -1,30 +1,33 @@
 class Solution {
 public:
-    bool dfs(int cur, unordered_map<int, vector<int>>& m, unordered_set<int>& visited){
-        if(visited.find(cur)!=visited.end())
-            return false;
+    bool dfs(int cur, vector<vector<int>>& adj, unordered_set<int>& visit){
+        if(visit.find(cur)!=visit.end())
+            return true;
         
-        visited.insert(cur);
-        for(int v : m[cur]){
-            if(!dfs(v, m, visited))
-                return false;
+        visit.insert(cur);
+        for(int v : adj[cur]){
+            if(dfs(v, adj, visit))
+                return true;
         }
         
-        m[cur].clear();
-        visited.erase(cur);
-        return true;
+        visit.erase(cur);
+        adj[cur].clear();
+        return false;
     }
+        
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        unordered_map<int, vector<int>> m;
-        for(auto& v : prerequisites) {
-            m[v[1]].push_back(v[0]);
+        int n = numCourses;
+        vector<vector<int>> adj(n);
+        for(auto edge : prerequisites){
+            adj[edge[1]].push_back(edge[0]);
         }
         
-        unordered_set<int> visited;
-        for(int i=0; i<numCourses; i++){
-            if(!dfs(i, m, visited))
+        unordered_set<int> visit;
+        for(int i=0; i<n; i++){
+            if(dfs(i, adj, visit))
                 return false;
         }
+        
         return true;
     }
 };
