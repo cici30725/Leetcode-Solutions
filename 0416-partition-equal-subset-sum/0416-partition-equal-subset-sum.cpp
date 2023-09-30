@@ -7,19 +7,26 @@ public:
         total /= 2;
         
         int n = nums.size();
-        vector<vector<bool>> dp(total+1, vector<bool>(n+1, false));
+        vector<bool> dp(total+1, false);
         
-        for(int i=0; i<=n; i++)
-            dp[0][i] = true;
+        dp[0] = true;
         
-        for(int i=1; i<=total; i++){
-            for(int j=1; j<=n; j++){
-                dp[i][j] = dp[i][j-1];
+        for(int j=1; j<=n; j++){
+            for(int i=total; i>=1; i--){
                 if(i>=nums[j-1])
-                    dp[i][j] = dp[i][j] | dp[i-nums[j-1]][j-1];
+                    dp[i] = dp[i] | dp[i-nums[j-1]];
             }
         }
         
-        return dp[total][n];
+        /*
+        for(int i=1; i<=total; i++){
+            for(int j=n; j>=1; j--){
+                if(i>=nums[j-1])
+                    dp[i] = dp[i] | dp[i-nums[j-1]];
+            }
+        }
+        */
+        
+        return dp[total];
     }
 };
