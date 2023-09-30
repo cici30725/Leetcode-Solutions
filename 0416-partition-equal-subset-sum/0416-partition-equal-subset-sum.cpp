@@ -2,20 +2,21 @@ class Solution {
 public:
     bool canPartition(vector<int>& nums) {
         int total = accumulate(nums.begin(), nums.end(), 0);
-        if(total%2!=0)
+        if(total % 2 !=0)
             return false;
-        total/=2;
+        total /= 2;
         
         int n = nums.size();
         vector<vector<bool>> dp(total+1, vector<bool>(n+1, false));
+        
         for(int i=0; i<=n; i++)
             dp[0][i] = true;
         
-        for(int cur=1; cur<=total; cur++){
-            for(int i=1; i<=n; i++){
-                dp[cur][i] = dp[cur][i-1];
-                if(cur - nums[i-1] >=0)
-                    dp[cur][i] = dp[cur][i] || dp[cur-nums[i-1]][i-1];
+        for(int i=1; i<=total; i++){
+            for(int j=1; j<=n; j++){
+                dp[i][j] = dp[i][j-1];
+                if(i>=nums[j-1])
+                    dp[i][j] = dp[i][j] | dp[i-nums[j-1]][j-1];
             }
         }
         
