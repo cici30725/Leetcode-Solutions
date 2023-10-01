@@ -11,24 +11,22 @@
  */
 class Solution {
 public:
-    TreeNode* dfs(vector<int>& preorder, vector<int>& inorder, int pl, int pr, int il, int ir){
-        if(pl >= pr || il >= ir)
-            return nullptr;
-        
-        int curVal = preorder[pl];
-        TreeNode* curNode = new TreeNode{curVal};
-        
-        int i=il;
-        while(i<ir && inorder[i]!=curVal)
+    int i = 0;
+    int p = 0;
+    
+    TreeNode* build(int stopVal, vector<int>& preorder, vector<int>& inorder){
+        if(i < inorder.size() && inorder[i]!=stopVal){
+            TreeNode* curNode = new TreeNode{preorder[p]};
+            p++;
+            curNode->left = build(curNode->val, preorder, inorder);
             i++;
-        
-        int leftLen = i - il;
-        curNode->left = dfs(preorder, inorder, pl+1, pl+1+leftLen, il, i);
-        curNode->right = dfs(preorder, inorder, pl+1+leftLen, pr, i+1, ir);
-        return curNode;
+            curNode->right = build(stopVal, preorder, inorder);
+            return curNode;
+        }
+        else
+            return nullptr;
     }
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int n = preorder.size();
-        return dfs(preorder, inorder, 0, n, 0, n);
+        return build(-5000, preorder, inorder);
     }
 };
