@@ -1,44 +1,46 @@
 class Solution {
 public:
-    int to_idx(char c){
-        return c>='A' && c<='Z' ? c-'A'+26 : c-'a';
-    }
-    
-    bool match(array<int, 52>& freq, array<int, 52>& window){
-        for(int i=0; i<52; i++){
-            if(window[i] < freq[i])
-                return false;
-        }
-        
-        return true;
-    }
-    
     string minWindow(string s, string t) {
-        if(s.size() < t.size())
-            return "";
-        
-        array<int, 52> freq{};
-        array<int, 52> window{};
+        array<int, 128> freq{};
+        int cnt = 0;
         for(char c : t){
-            freq[to_idx(c)]++;
+            freq[c]++;
+            if(freq[c]==1)
+                cnt++;
         }
         
+        int res_l;
+        int res_len = INT_MAX;
         int l = -1, r = 0;
-        pair<int, int> res = {-1, s.size()};
-        for(; r<s.size(); r++){
-            window[to_idx(s[r])]++;
-            while(l<r && match(freq, window)){
-                if(r-l < res.second-res.first){
-                    res = {l, r};
+        while(r<s.size()){
+            freq[s[r]]--;
+            
+            if(freq[s[r]] == 0)
+                cnt--;
+            
+            if(cnt==0){
+                // cout<<l<<" "<<r<<endl;
+                
+                while(cnt==0){
+                    if(r-l < res_len){
+                        res_len = r-l;
+                        res_l = l+1;
+                    }
+                    
+                    l++;
+                    freq[s[l]]++;
+                    if(freq[s[l]]>0)
+                        cnt++;
                 }
-                l++;
-                window[to_idx(s[l])]--;
             }
+            
+            r++;
         }
         
-        if(res.second == s.size())
+        if(res_len == INT_MAX)
             return "";
         else
-            return s.substr(res.first+1, res.second-res.first);
+            return s.substr(res_l, res_len);
+        
     }
 };
